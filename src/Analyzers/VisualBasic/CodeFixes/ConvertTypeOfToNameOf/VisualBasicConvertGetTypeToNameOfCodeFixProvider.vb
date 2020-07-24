@@ -21,7 +21,7 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ConvertTypeOfToNameOf
         End Sub
 
         Protected Overrides Function GetCodeFixTitle() As String
-            Return AnalyzersResources.Convert_gettype_to_nameof
+            Return VisualBasicCodeFixesResources.Convert_GetType_to_NameOf
         End Function
 
         Protected Overrides Function GetSymbolType(semanticModel As SemanticModel, node As SyntaxNode) As ITypeSymbol

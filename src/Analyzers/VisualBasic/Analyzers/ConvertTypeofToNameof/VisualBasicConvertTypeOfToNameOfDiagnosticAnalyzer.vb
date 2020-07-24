@@ -5,37 +5,24 @@
 Imports Microsoft.CodeAnalysis.Diagnostics
 Imports Microsoft.CodeAnalysis.ConvertTypeOfToNameOf
 Imports Microsoft.CodeAnalysis.VisualBasic.Syntax
+Imports Microsoft.CodeAnalysis
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.ConvertTypeOfToNameOf
     <DiagnosticAnalyzer(LanguageNames.VisualBasic)>
     Friend NotInheritable Class VisualBasicConvertTypeOfToNameOfDiagnosticAnalyzer
         Inherits AbstractConvertTypeOfToNameOfDiagnosticAnalyzer
 
+        Public Sub New()
+            MyBase.New(New LocalizableResourceString(NameOf(VisualBasicAnalyzersResources.GetType_can_be_converted_to_NameOf), VisualBasicAnalyzersResources.ResourceManager, GetType(VisualBasicAnalyzersResources)))
+        End Sub
+
         Protected Overrides Function IsValidTypeofAction(context As OperationAnalysisContext) As Boolean
-            Dim node As SyntaxNode
-            Dim compilation As Compilation
-            Dim isValidLanguage As Boolean
-            Dim IsValidType As Boolean
-            Dim IsParentValid As Boolean
-
-            node = context.Operation.Syntax
-            compilation = context.Compilation
-            isValidLanguage = DirectCast(compilation, VisualBasicCompilation).LanguageVersion >= LanguageVersion.VisualBasic14
-            IsValidType = node.IsKind(SyntaxKind.GetTypeExpression)
-            IsParentValid = node.Parent.GetType() Is GetType(MemberAccessExpressionSyntax)
-
-            Return isValidLanguage And IsValidType And IsParentValid
-        End Function
-
-        Protected Overrides Function CreateDiagnostic(location As Location, options As CompilationOptions) As Diagnostic
-            Dim message = New LocalizableResourceString(
-                       NameOf(AnalyzersResources.Convert_gettype_to_nameof), AnalyzersResources.ResourceManager, GetType(AnalyzersResources))
-            Dim diagnostic = CreateDescriptorWithId(DescriptorId, message, message)
-            Return DiagnosticHelper.Create(diagnostic,
-                                           location,
-                                           diagnostic.GetEffectiveSeverity(options),
-                                           additionalLocations:=Nothing,
-                                           properties:=Nothing)
+            Dim node = context.Operation.Syntax
+            Dim compilation = context.Compilation
+            Dim isValidLanguage = DirectCast(compilation, VisualBasicCompilation).LanguageVersion >= LanguageVersion.VisualBasic14
+            Dim isValidType = node.IsKind(SyntaxKind.GetTypeExpression)
+            Dim isParentValid = node.Parent.GetType() Is GetType(MemberAccessExpressionSyntax)
+            Return isValidLanguage And isValidType And isParentValid
         End Function
     End Class
 End Namespace

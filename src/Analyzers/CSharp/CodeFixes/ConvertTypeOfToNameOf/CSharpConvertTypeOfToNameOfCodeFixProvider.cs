@@ -23,9 +23,7 @@ namespace Microsoft.CodeAnalysis.CSharp.ConvertTypeOfToNameOf
         }
 
         protected override string GetCodeFixTitle()
-        {
-            return AnalyzersResources.Convert_typeof_to_nameof;
-        }
+            => CSharpCodeFixesResources.Convert_typeof_to_nameof;
 
         protected override ITypeSymbol? GetSymbolType(SemanticModel model, SyntaxNode node)
         {

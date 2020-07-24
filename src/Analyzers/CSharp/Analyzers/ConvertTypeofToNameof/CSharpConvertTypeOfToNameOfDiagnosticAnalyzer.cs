@@ -4,13 +4,9 @@
 
 #nullable enable
 
-using Microsoft.CodeAnalysis.CodeStyle;
+using Microsoft.CodeAnalysis.ConvertTypeOfToNameOf;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.ConvertTypeOfToNameOf;
-using Microsoft.CodeAnalysis.LanguageServices;
-using Microsoft.CodeAnalysis.Operations;
-using Microsoft.CodeAnalysis.Shared.Extensions;
 
 namespace Microsoft.CodeAnalysis.CSharp.ConvertTypeOfToNameOf
 {
@@ -21,6 +17,7 @@ namespace Microsoft.CodeAnalysis.CSharp.ConvertTypeOfToNameOf
     internal sealed class CSharpConvertTypeOfToNameOfDiagnosticAnalyzer : AbstractConvertTypeOfToNameOfDiagnosticAnalyzer
     {
         public CSharpConvertTypeOfToNameOfDiagnosticAnalyzer()
+            : base(new LocalizableResourceString(nameof(CSharpAnalyzersResources.typeof_can_be_converted__to_nameof), CSharpAnalyzersResources.ResourceManager, typeof(CSharpAnalyzersResources)))
         {
         }
 
@@ -38,20 +35,6 @@ namespace Microsoft.CodeAnalysis.CSharp.ConvertTypeOfToNameOf
             // the parent syntax is a member access expression otherwise the syntax is not the kind of
             // expression that we want to analyze
             return node is TypeOfExpressionSyntax { Parent: MemberAccessExpressionSyntax _ };
-        }
-
-        protected override Diagnostic CreateDiagnostic(Location location, CompilationOptions options)
-        {
-            var messageString = new LocalizableResourceString(
-                nameof(AnalyzersResources.Convert_typeof_to_nameof),
-                AnalyzersResources.ResourceManager, typeof(AnalyzersResources));
-            var messageDescriptor = CreateDescriptorWithId(DescriptorId, messageString, messageString);
-
-            return DiagnosticHelper.Create(messageDescriptor,
-                                           location,
-                                           messageDescriptor.GetEffectiveSeverity(options),
-                                           additionalLocations: null,
-                                           properties: null);
         }
     }
 }
