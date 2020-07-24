@@ -40,11 +40,16 @@ namespace Microsoft.CodeAnalysis.CSharp.ConvertTypeOfToNameOf
             return node is TypeOfExpressionSyntax { Parent: MemberAccessExpressionSyntax _ };
         }
 
-        protected override Diagnostic LanguageReportDiagnostic(Location location, DiagnosticDescriptor cSharpDescriptor, DiagnosticDescriptor visualBasicDescriptor, CompilationOptions options)
+        protected override Diagnostic CreateDiagnostic(Location location, CompilationOptions options)
         {
-            return DiagnosticHelper.Create(visualBasicDescriptor,
+            var messageString = new LocalizableResourceString(
+                nameof(AnalyzersResources.Convert_typeof_to_nameof),
+                AnalyzersResources.ResourceManager, typeof(AnalyzersResources));
+            var messageDescriptor = CreateDescriptorWithId(DescriptorId, messageString, messageString);
+
+            return DiagnosticHelper.Create(messageDescriptor,
                                            location,
-                                           visualBasicDescriptor.GetEffectiveSeverity(options),
+                                           messageDescriptor.GetEffectiveSeverity(options),
                                            additionalLocations: null,
                                            properties: null);
         }

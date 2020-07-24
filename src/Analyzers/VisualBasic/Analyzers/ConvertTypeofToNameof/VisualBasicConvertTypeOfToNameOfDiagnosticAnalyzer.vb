@@ -27,10 +27,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.ConvertTypeOfToNameOf
             Return isValidLanguage And IsValidType And IsParentValid
         End Function
 
-        Protected Overrides Function LanguageReportDiagnostic(location As Location, cSharpDescriptor As DiagnosticDescriptor, visualBasicDescriptor As DiagnosticDescriptor, options As CompilationOptions) As Diagnostic
-            Return DiagnosticHelper.Create(visualBasicDescriptor,
+        Protected Overrides Function CreateDiagnostic(location As Location, options As CompilationOptions) As Diagnostic
+            Dim message = New LocalizableResourceString(
+                       NameOf(AnalyzersResources.Convert_gettype_to_nameof), AnalyzersResources.ResourceManager, GetType(AnalyzersResources))
+            Dim diagnostic = CreateDescriptorWithId(DescriptorId, message, message)
+            Return DiagnosticHelper.Create(diagnostic,
                                            location,
-                                           visualBasicDescriptor.GetEffectiveSeverity(options),
+                                           diagnostic.GetEffectiveSeverity(options),
                                            additionalLocations:=Nothing,
                                            properties:=Nothing)
         End Function

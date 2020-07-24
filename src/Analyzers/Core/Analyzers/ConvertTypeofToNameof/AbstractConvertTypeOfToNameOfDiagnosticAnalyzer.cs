@@ -22,16 +22,12 @@ namespace Microsoft.CodeAnalysis.ConvertTypeOfToNameOf
             : base(IDEDiagnosticIds.ConvertTypeOfToNameOfDiagnosticId, option: null, new LocalizableResourceString(
                        nameof(AnalyzersResources.Convert_gettype_to_nameof), AnalyzersResources.ResourceManager, typeof(AnalyzersResources)))
         {
-            var csharpMessage = new LocalizableResourceString(nameof(AnalyzersResources.Convert_typeof_to_nameof), AnalyzersResources.ResourceManager, typeof(AnalyzersResources));
-            CSharpDescriptor = CreateDescriptorWithId(DescriptorId, csharpMessage, csharpMessage);
         }
-        internal DiagnosticDescriptor VBDescriptor => Descriptor;
 
-        internal DiagnosticDescriptor CSharpDescriptor { get; }
 
         protected abstract bool IsValidTypeofAction(OperationAnalysisContext context);
 
-        protected abstract Diagnostic LanguageReportDiagnostic(Location location, DiagnosticDescriptor cSharpDescriptor, DiagnosticDescriptor visualBasicDescriptor, CompilationOptions options);
+        protected abstract Diagnostic CreateDiagnostic(Location location, CompilationOptions options);
 
         public override DiagnosticAnalyzerCategory GetAnalyzerCategory()
             => DiagnosticAnalyzerCategory.SemanticSpanAnalysis;
@@ -56,7 +52,7 @@ namespace Microsoft.CodeAnalysis.ConvertTypeOfToNameOf
                 return;
             }
             var location = parent.GetLocation();
-            context.ReportDiagnostic(LanguageReportDiagnostic(location, CSharpDescriptor, VBDescriptor, context.Compilation.Options));
+            context.ReportDiagnostic(CreateDiagnostic(location, context.Compilation.Options));
 
         }
 
