@@ -20,11 +20,8 @@ jobs:
     - script: eng/cibuild.cmd -restore -configuration Debug -prepareMachine
       displayName: Build
       
-    - task: UseDotNet@2
-      displayName: 'Use .NET Core sdk'
-      inputs:
-        packageType: sdk
-        version: 2.1.503
+    - script: dotnet --info
+      displayName: DotNet info
 
     - task: RichCodeNavIndexer@0
       displayName: RichCodeNav Upload
