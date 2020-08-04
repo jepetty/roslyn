@@ -24,7 +24,7 @@ jobs:
     - script: eng/cibuild.cmd -configuration Debug -prepareMachine
       displayName: Build
       
-    - script: echo %DOTNET_ROOT%
+    - powershell: Write-Host $env:DOTNET_ROOT
       displayName: Display dotnet root
 
     - task: DotNetCoreCLI@2
