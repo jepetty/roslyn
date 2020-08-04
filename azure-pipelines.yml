@@ -28,12 +28,6 @@ jobs:
       env: 
         DOTNET_ROOT: $(Build.SourcesDirectory)/.dotnet
 
-    - powershell: |
-        dotnet --info
-        [System.Environment]::SetEnvironmentVariable("DOTNET_ROOT", "$(Build.SourcesDirectory)/.dotnet")
-        dotnet --info
-      displayName: Try to set environment variable myself
-
     - task: RichCodeNavIndexer@0
       displayName: RichCodeNav Upload
       inputs:
