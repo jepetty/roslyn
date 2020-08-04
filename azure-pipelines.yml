@@ -30,7 +30,7 @@ jobs:
 
     - powershell: |
         dotnet --info
-        [System.Environment]::SetEnvironmentVariable("DOTNET_ROOT", $(Build.SourcesDirectory)/.dotnet)
+        [System.Environment]::SetEnvironmentVariable("DOTNET_ROOT", "$(Build.SourcesDirectory)/.dotnet")
         dotnet --info
       displayName: Try to set environment variable myself
 
