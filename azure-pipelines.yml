@@ -42,4 +42,4 @@ jobs:
         richNavLogOutputDirectory: $(Build.SourcesDirectory)/artifacts/bin
       continueOnError: true
       env:
-        $(Build.SourcesDirectory)/.dotnet
+        DOTNET_ROOT: $(Build.SourcesDirectory)/.dotnet
