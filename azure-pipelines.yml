@@ -14,8 +14,7 @@ schedules:
 jobs:
 - job: RichCodeNav_Indexing
   pool:
-    name: NetCorePublic-Pool
-    queue: BuildPool.Windows.10.Amd64.Open
+    name: Hosted Windows 2019 with VS2019
   variables:
     EnableRichCodeNavigation: true
   timeoutInMinutes: 200

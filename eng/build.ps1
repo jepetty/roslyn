@@ -667,7 +667,7 @@ try {
   }
 
   if ($restore -or $build -or $rebuild -or $pack -or $sign -or $publish -or $testCoreClr) {
-    BuildSolution
+    # BuildSolution
   }
 
   if ($ci -and $build -and $msbuildEngine -eq "vs") {
@@ -677,7 +677,7 @@ try {
   try
   {
     if ($testDesktop -or $testVsi -or $testIOperation) {
-      TestUsingOptimizedRunner
+      # TestUsingOptimizedRunner
     }
   }
   catch
@@ -706,8 +706,11 @@ catch {
   ExitWithExitCode 1
 }
 finally {
+  echo $env:DOTNET_ROOT
   if ($ci) {
     Stop-Processes
   }
   Pop-Location
+
+  echo $env:DOTNET_ROOT
 }
