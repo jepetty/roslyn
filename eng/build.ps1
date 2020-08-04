@@ -646,9 +646,10 @@ try {
 
     $global:_DotNetInstallDir = Join-Path $RepoRoot ".dotnet"
     InstallDotNetSdk $global:_DotNetInstallDir $GlobalJson.tools.dotnet
-    echo $env:DOTNET_ROOT
+    echo "First dotnet root: $env:DOTNET_ROOT"
     echo "Setting environment variable 'DOTNET_ROOT'"
     [System.Environment]::SetEnvironmentVariable("DOTNET_ROOT", $global:_DotNetInstallDir)
+    echo "Second dotnet root: $env:DOTNET_ROOT"
   }
 
   if ($restore) {
@@ -714,11 +715,13 @@ catch {
   ExitWithExitCode 1
 }
 finally {
+  Write-Host "In finally block!"
   echo $env:DOTNET_ROOT
   if ($ci) {
     Stop-Processes
   }
   Pop-Location
 
+  Write-Host "Third dotnet root: $env:DOTNET_ROOT"
   echo $env:DOTNET_ROOT
 }
