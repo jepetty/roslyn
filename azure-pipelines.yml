@@ -26,10 +26,11 @@ jobs:
     - powershell: Write-Host $env:DOTNET_ROOT
       displayName: Display dotnet root
 
-    - task: DotNetCoreCLI@2
-      inputs:
-        command: custom
-        custom: --info
+    - powershell: |
+        dotnet --info
+        [System.Environment]::SetEnvironmentVariable("DOTNET_ROOT", $(Build.SourcesDirectory)/.dotnet)
+        dotnet --info
+      displayName: Try to set environment variable myself
 
     - task: RichCodeNavIndexer@0
       displayName: RichCodeNav Upload
