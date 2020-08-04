@@ -646,6 +646,7 @@ try {
 
     $global:_DotNetInstallDir = Join-Path $RepoRoot ".dotnet"
     InstallDotNetSdk $global:_DotNetInstallDir $GlobalJson.tools.dotnet
+    echo $env:DOTNET_ROOT
   }
 
   if ($restore) {
@@ -655,7 +656,8 @@ try {
   try
   {
     if ($bootstrap) {
-      $bootstrapDir = Make-BootstrapBuild -force32:$test32
+      echo "skipping creating a bootstrap build"
+      # $bootstrapDir = Make-BootstrapBuild -force32:$test32
     }
   }
   catch
@@ -671,13 +673,15 @@ try {
   }
 
   if ($ci -and $build -and $msbuildEngine -eq "vs") {
-    SetVisualStudioBootstrapperBuildArgs
+    # SetVisualStudioBootstrapperBuildArgs
+    echo "Skipping set VS Bootstrapper build args"
   }
 
   try
   {
     if ($testDesktop -or $testVsi -or $testIOperation) {
       # TestUsingOptimizedRunner
+      echo "Skipping test using optimized runner"
     }
   }
   catch
@@ -690,11 +694,13 @@ try {
 
   if ($launch) {
     if (-not $build) {
-      InitializeBuildTool
+      echo "Skipping initialize build tool"
+      # InitializeBuildTool
     }
 
-    $devenvExe = Join-Path $env:VSINSTALLDIR 'Common7\IDE\devenv.exe'
-    &$devenvExe /rootSuffix RoslynDev
+    echo "Skipping starting devenv"
+    #$devenvExe = Join-Path $env:VSINSTALLDIR 'Common7\IDE\devenv.exe'
+    #&$devenvExe /rootSuffix RoslynDev
   }
 
   ExitWithExitCode 0
