@@ -25,6 +25,8 @@ jobs:
       
     - powershell: Write-Host $env:DOTNET_ROOT
       displayName: Display dotnet root
+      env: 
+        DOTNET_ROOT: $(Build.SourcesDirectory)/.dotnet
 
     - powershell: |
         dotnet --info
@@ -39,3 +41,5 @@ jobs:
         environment: production
         richNavLogOutputDirectory: $(Build.SourcesDirectory)/artifacts/bin
       continueOnError: true
+      env:
+        $(Build.SourcesDirectory)/.dotnet
