@@ -24,8 +24,13 @@ jobs:
     - script: eng/cibuild.cmd -configuration Debug -prepareMachine
       displayName: Build
       
-    - script: dotnet --info
-      displayName: DotNet info
+    - script: $env:DOTNET_ROOT
+      displayName: Display dotnet root
+
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: custom
+        custom: --info
 
     - task: RichCodeNavIndexer@0
       displayName: RichCodeNav Upload
