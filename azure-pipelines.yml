@@ -34,6 +34,8 @@ jobs:
         version: 2.2.100
     - script: dotnet --info
       displayName: Show .NET SDK info
+      env:
+        DOTNET_ROOT: $(Build.SourcesDirectory)/.dotnet
 
     - task: RichCodeNavIndexer@0
       displayName: RichCodeNav Upload
