@@ -28,6 +28,13 @@ jobs:
       env: 
         DOTNET_ROOT: $(Build.SourcesDirectory)/.dotnet
 
+    - task: UseDotNet@2
+      displayName: Install .NET CLI
+      inputs:
+        version: $(DotNetSdkVersion)
+    - script: dotnet --info
+      displayName: Show .NET SDK info
+
     - task: RichCodeNavIndexer@0
       displayName: RichCodeNav Upload
       inputs:
