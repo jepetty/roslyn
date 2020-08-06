@@ -28,6 +28,17 @@ jobs:
       env: 
         DOTNET_ROOT: $(Build.SourcesDirectory)/.dotnet
 
+    - task: UseDotNet@2
+      displayName: Install .NET CLI
+      inputs:
+        version: 2.2.100
+    - task: UseDotNet@2
+      displayName: Install .NET CLI
+      inputs:
+        version: 5.0.100-preview.7.20366.6
+    - script: dotnet --info
+      displayName: Show .NET SDK info
+
     - task: RichCodeNavIndexer@0
       displayName: RichCodeNav Upload
       inputs:
@@ -35,5 +46,3 @@ jobs:
         environment: production
         richNavLogOutputDirectory: $(Build.SourcesDirectory)/artifacts/bin
       continueOnError: true
-      env:
-        DOTNET_ROOT: $(Build.SourcesDirectory)/.dotnet
