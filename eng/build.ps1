@@ -43,7 +43,6 @@ param (
   [switch]$useGlobalNuGetCache = $true,
   [switch]$warnAsError = $false,
   [switch]$sourceBuild = $false,
-  [switch]$oop64bit = $true,
 
   # official build settings
   [string]$officialBuildId = "",
@@ -277,11 +276,11 @@ function GetIbcSourceBranchName() {
   }
 
   function calculate {
-    $fallback = "main"
+    $fallback = "master"
 
     $branchData = GetBranchPublishData $officialSourceBranchName
     if ($branchData -eq $null) {
-      Write-LogIssue -Type "warning" -Message "Branch $officialSourceBranchName is not listed in PublishData.json. Using IBC data from '$fallback'."
+      Write-Host "Warning: Branch $officialSourceBranchName is not listed in PublishData.json. Using IBC data from '$fallback'." -ForegroundColor Yellow
       Write-Host "Override by setting IbcDrop build variable." -ForegroundColor Yellow
       return $fallback
     }
@@ -323,7 +322,7 @@ function SetVisualStudioBootstrapperBuildArgs() {
   $branchData = GetBranchPublishData $branchName
 
   if ($branchData -eq $null) {
-    Write-LogIssue -Type warning -Message "Branch $officialSourceBranchName is not listed in PublishData.json. Using VS bootstrapper for branch '$fallbackBranch'. "
+    Write-Host "Warning: Branch $officialSourceBranchName is not listed in PublishData.json. Using VS bootstrapper for branch '$fallbackBranch'. " -ForegroundColor Yellow
     $branchData = GetBranchPublishData $fallbackBranch
   }
 
@@ -332,14 +331,12 @@ function SetVisualStudioBootstrapperBuildArgs() {
   $vsMajorVersion = $branchData.vsMajorVersion
   $vsChannel = "int.$vsBranchSimpleName"
 
-  Write-Host "##vso[task.setvariable variable=VisualStudio.MajorVersion;]$vsMajorVersion"
+  Write-Host "##vso[task.setvariable variable=VisualStudio.MajorVersion;]$vsMajorVersion"        
   Write-Host "##vso[task.setvariable variable=VisualStudio.ChannelName;]$vsChannel"
 
   $insertionDir = Join-Path $VSSetupDir "Insertion"
-  if (Test-Path $insertionDir) {
-    $manifestList = [string]::Join(',', (Get-ChildItem "$insertionDir\*.vsman"))
-    Write-Host "##vso[task.setvariable variable=VisualStudio.SetupManifestList;]$manifestList"
-  }
+  $manifestList = [string]::Join(',', (Get-ChildItem "$insertionDir\*.vsman"))
+  Write-Host "##vso[task.setvariable variable=VisualStudio.SetupManifestList;]$manifestList"
 }
 
 # Core function for running our unit / integration tests tests
@@ -597,8 +594,6 @@ function Setup-IntegrationTestRun() {
     # Make sure we can capture a screenshot. An exception at this point will fail-fast the build.
     Capture-Screenshot $screenshotPath
   }
-
-  $env:ROSLYN_OOP64BIT = "$oop64bit"
 }
 
 function Prepare-TempDir() {
@@ -651,6 +646,10 @@ try {
 
     $global:_DotNetInstallDir = Join-Path $RepoRoot ".dotnet"
     InstallDotNetSdk $global:_DotNetInstallDir $GlobalJson.tools.dotnet
+    echo "First dotnet root: $env:DOTNET_ROOT"
+    echo "Setting environment variable 'DOTNET_ROOT'"
+    [System.Environment]::SetEnvironmentVariable("DOTNET_ROOT", $global:_DotNetInstallDir)
+    echo "Second dotnet root: $env:DOTNET_ROOT"
   }
 
   if ($restore) {
@@ -660,7 +659,8 @@ try {
   try
   {
     if ($bootstrap) {
-      $bootstrapDir = Make-BootstrapBuild -force32:$test32
+      echo "skipping creating a bootstrap build"
+      # $bootstrapDir = Make-BootstrapBuild -force32:$test32
     }
   }
   catch
@@ -672,17 +672,19 @@ try {
   }
 
   if ($restore -or $build -or $rebuild -or $pack -or $sign -or $publish -or $testCoreClr) {
-    BuildSolution
+    # BuildSolution
   }
 
   if ($ci -and $build -and $msbuildEngine -eq "vs") {
-    SetVisualStudioBootstrapperBuildArgs
+    # SetVisualStudioBootstrapperBuildArgs
+    echo "Skipping set VS Bootstrapper build args"
   }
 
   try
   {
     if ($testDesktop -or $testVsi -or $testIOperation) {
-      TestUsingOptimizedRunner
+      # TestUsingOptimizedRunner
+      echo "Skipping test using optimized runner"
     }
   }
   catch
@@ -695,11 +697,13 @@ try {
 
   if ($launch) {
     if (-not $build) {
-      InitializeBuildTool
+      echo "Skipping initialize build tool"
+      # InitializeBuildTool
     }
 
-    $devenvExe = Join-Path $env:VSINSTALLDIR 'Common7\IDE\devenv.exe'
-    &$devenvExe /rootSuffix RoslynDev
+    echo "Skipping starting devenv"
+    #$devenvExe = Join-Path $env:VSINSTALLDIR 'Common7\IDE\devenv.exe'
+    #&$devenvExe /rootSuffix RoslynDev
   }
 
   ExitWithExitCode 0
@@ -711,8 +715,13 @@ catch {
   ExitWithExitCode 1
 }
 finally {
+  Write-Host "In finally block!"
+  echo $env:DOTNET_ROOT
   if ($ci) {
     Stop-Processes
   }
   Pop-Location
+
+  Write-Host "Third dotnet root: $env:DOTNET_ROOT"
+  echo $env:DOTNET_ROOT
 }
