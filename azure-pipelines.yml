@@ -29,6 +29,7 @@ jobs:
         languages: 'csharp'
         environment: production
         richNavLogOutputDirectory: $(Build.SourcesDirectory)/artifacts/bin
+        isPrivateFeed: true
         nugetFeed: https://jepetty.pkgs.visualstudio.com/_packaging/TestingBuildStuff/nuget/v3/index.json
       continueOnError: true
       env:
